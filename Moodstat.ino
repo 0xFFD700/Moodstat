@@ -1,12 +1,12 @@
+#include <FastLED.h>
+
 // Distance
 #define TRIG_PIN 23 
 #define ECHO_PIN 22 
 
 // Led
 #define LED_BACK 16
-#define LED_GOOD 17
-#define LED_MED 18
-#define LED_BAD 19
+#define NUM_LEDS 20
 
 // Button
 #define BUTTON_GOOD 27
@@ -15,6 +15,7 @@
 
 // Variables
 float duration_us, distance_cm;
+CRGB leds[NUM_LEDS];
 
 void setup() {
   Serial.begin (9600);
@@ -25,9 +26,7 @@ void setup() {
 
   // Led
   pinMode(LED_BACK, OUTPUT);
-  pinMode(LED_GOOD, OUTPUT);
-  pinMode(LED_MED, OUTPUT);
-  pinMode(LED_BAD, OUTPUT);
+  FastLED.addLeds<WS2812, LED_BACK, GRB>(leds, NUM_LEDS);
 
   //Button
   pinMode(BUTTON_GOOD, INPUT_PULLUP);
@@ -56,26 +55,44 @@ void loop() {
   if (distance_cm < 20) {
 
      Serial.print("Background Led an\n");
-
+    
+     for (int i = 0; i<20; i++) {
+       leds[i] = CRGB(255, 255, 255);
+       FastLED.show();
+     }
+  } else {
+     Serial.print("Background Led aus\n");
+    
+     for (int i = 0; i<20; i++) {
+       leds[i] = CRGB(0, 0, 0);
+       FastLED.show();
+     }
+  }
+      
   // waits for button to be pressed
   if (digitalRead(BUTTON_GOOD) == LOW) {
     Serial.print("GOOD");
-    digitalWrite(LED_BACK, HIGH);
-    delay(1000);
-    digitalWrite(LED_BACK, LOW);
+    for (int i = 0; i<20; i++) {
+       leds[i] = CRGB(0, 255, 0);
+       FastLED.show();
+     }
+    delay(2000);
     } 
    else if (digitalRead(BUTTON_MED) == LOW) {
       Serial.print("MED");
-      digitalWrite(LED_BACK, HIGH);
-      delay(1000);
-      digitalWrite(LED_BACK, LOW);
+    for (int i = 0; i<20; i++) {
+       leds[i] = CRGB(255, 128, 0);
+       FastLED.show();
+     }
+    delay(2000);
       }
    else if (digitalRead(BUTTON_BAD) == LOW) {
       Serial.print("BAD");
-      digitalWrite(LED_BACK,HIGH);
-      delay(1000);
-      digitalWrite(LED_BACK, LOW);
-      }
+    for (int i = 0; i<20; i++) {
+       leds[i] = CRGB(255, 0, 0);
+       FastLED.show();
+     }
+    delay(2000);
     }
 
   delay(500);
