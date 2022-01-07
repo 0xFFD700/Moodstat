@@ -39,7 +39,7 @@
                         <a class="nav-link" href="week.html">Week</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="month.html">Month</a>
+                        <a class="nav-link disabled" href="month.html" tabindex="-1" aria-disabled="true">Month</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="year.html">Year</a>
@@ -63,13 +63,43 @@
 
     <div class="d-flex flex-column min-vh-100 justify-content-center">
         <div class="jumbotron align-items-center">
-            <div class="container text-center">
-                <h1>Current Mood:</h1>
-                <h1>Good</h1>
-                <h3>07-01-2022 18:13</h3>
+            <div class="container">
+                <canvas id="myChart" width="200" height="100"></canvas>
             </div>
         </div>
     </div>
+
+    <script>
+        var xValues = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        var yValues = ["Good", "Mehh", "Bad"];
+
+        new Chart("myChart", {
+            type: "line",
+            data: {
+                labels: xValues,
+                datasets: [{
+                    fill: false,
+                    lineTension: 0,
+                    backgroundColor: "rgba(0,0,255,1.0)",
+                    borderColor: "rgba(0,0,255,0.1)",
+                    data: yValues
+                }]
+            },
+            options: {
+                legend: {
+                    display: false
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            min: 0,
+                            max: 3
+                        }
+                    }],
+                }
+            }
+        });
+    </script>
 
     <footer class="text-center bg-dark text-white pt-3 pb-3">Copyright © 2022</footer>
 
