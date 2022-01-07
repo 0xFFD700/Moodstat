@@ -1,60 +1,59 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
- 
+
+// Wifi config
 const char* ssid = "Love.Peace.Unity.";
 const char* password = "";
- 
-void setup() {
- 
-  Serial.begin(9600);
-  delay(4000);   //Delay needed before calling the WiFi.begin
- 
-  WiFi.begin(ssid, password); 
- 
-  while (WiFi.status() != WL_CONNECTED) { //Check for the connection
-    delay(1000);
-    Serial.println("Connecting to WiFi..");
-  }
- 
-  Serial.println("Connected to the WiFi network");
- 
-}
- 
-void loop() {
- 
- if(WiFi.status()== WL_CONNECTED){   //Check WiFi connection status
- 
-   HTTPClient http;   
- 
-   http.begin("https://0xffd700.com/esppost.php");  //Specify destination for HTTP request
-   http.addHeader("Content-Type", "application/x-www-form-urlencoded");           //Specify content-type header
- 
-   int httpResponseCode = http.POST("mood=1");   //Send the actual POST request
- 
-   if(httpResponseCode>0){
- 
-    String response = http.getString();                       //Get the response to the request
 
-    Serial.println("Return code");
-    Serial.println(httpResponseCode);   //Print return code
-    Serial.println("Request answer");
-    Serial.println(response);           //Print request answer
- 
-   }else{
- 
-    Serial.print("Error on sending POST: ");
-    Serial.println(httpResponseCode);
- 
-   }
- 
-   http.end();  //Free resources
- 
- }else{
- 
-    Serial.println("Error in WiFi connection");   
- 
- }
- 
-  delay(10000);  //Send a request every 10 seconds
- 
+void setup() {
+
+  Serial.begin(9600);
+
+  // Doesn´t work without the delay
+  delay(4000);
+  WiFi.begin(ssid, password);
+
+  // Wait till WiFi is connected
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.println("Connecting WLAN");
+  }
+
+  Serial.println("Connected WLAN");
+}
+
+void sendData(String moodData) {
+   // Check if Wifi is still connected
+  if (WiFi.status() == WL_CONNECTED) {
+
+    // HTTP Request
+    HTTPClient http;
+    http.begin("https://0xffd700.com/esppost.php");
+    http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+    String mood = "mood=" + moodData;
+    int httpResponseCode = http.POST(mood);
+
+    // Get POST return
+    if (httpResponseCode > 0) {
+      String response = http.getString();
+      Serial.println("HTTP code:");
+      Serial.println(httpResponseCode);
+      Serial.println("Answer:");
+      Serial.println(response);
+    } else {
+      Serial.print("Error: ");
+      Serial.println(httpResponseCode);
+    }
+
+    http.end();
+
+  } else {
+    Serial.println("Disconnected WLAN");
+  }
+  }
+
+void loop() {
+  sendData("2");
+
+  delay(10000);
 }
