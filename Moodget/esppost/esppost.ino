@@ -4,6 +4,7 @@
 // Wifi config
 const char* ssid = "Love.Peace.Unity.";
 const char* password = "";
+const char* sessionId = "75982475702";
 
 void setup() {
 
@@ -30,7 +31,7 @@ void sendData(String moodData) {
     HTTPClient http;
     http.begin("https://0xffd700.com/esppost.php");
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-    String mood = "mood=" + moodData;
+    String mood = "mood=" + moodData + "&id=" + sessionId;
     int httpResponseCode = http.POST(mood);
 
     // Get POST return
