@@ -18,14 +18,56 @@
     <!-- Font Awesome-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <!-- Custom CSS-->
-    <link rel="stylesheet" href="mystyle.css">
+    <!-- Ajax-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 
     <title>Moodstat</title>
 </head>
 
 <body>
+
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                type: "GET",
+                url: "test.csv",
+                dataType: "text",
+                success: function(data) {
+                    processData(data)
+                }
+            });
+
+            function processData(data) {
+                var lines = data.trim().split('\n');
+                var lastLine = lines[lines.length - 1].split(',');
+                var moodTarget = document.getElementById('moodvalue')
+                var timeTarget = document.getElementById('timevalue')
+
+                lastLine.forEach(function(value, i) {
+                    switch (i) {
+                        case 0:
+                            timeTarget.innerText = value;
+                            break
+                        case 1:
+                            timeTarget.innerText += " at " + value;
+                            break
+                        case 2:
+                            if (value == 0) {
+                                moodTarget.innerText = "👍";
+                            } else if (value == 1) {
+                                moodTarget.innerText = "🖕";
+                            } else {
+                                moodTarget.innerText = "👎";
+                            }
+                            break
+                    }
+                    console.log(`This is the ${value} Data ${i}`);
+                });
+
+            }
+        })
+    </script>
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
@@ -65,8 +107,8 @@
         <div class="jumbotron align-items-center">
             <div class="container text-center">
                 <h1>Current Mood:</h1>
-                <h1>Good</h1>
-                <h3>07-01-2022 18:13</h3>
+                <h1 id="moodvalue">Loading...</h1>
+                <h3 id="timevalue">Loading...</h3>
             </div>
         </div>
     </div>

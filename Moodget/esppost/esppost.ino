@@ -31,7 +31,7 @@ void sendData(String moodData) {
     HTTPClient http;
     http.begin("https://0xffd700.com/esppost.php");
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-    String mood = "mood=" + moodData + "&id=" + sessionId;
+    String mood = "mood=" + moodData;
     int httpResponseCode = http.POST(mood);
 
     // Get POST return
