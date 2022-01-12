@@ -28,6 +28,7 @@
 <body>
 
     <script>
+        // Get Data
         $(document).ready(function() {
             $.ajax({
                 type: "GET",
@@ -38,6 +39,7 @@
                 }
             });
 
+            // Display last line as current mood
             function processData(data) {
                 var lines = data.trim().split('\n');
                 var lastLine = lines[lines.length - 1].split(',');
