@@ -15,11 +15,17 @@
     <!-- Charts.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 
-    <!-- Font Awesome-->
+    <!-- Moment.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.js"></script>
+
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <!-- Custom CSS-->
-    <link rel="stylesheet" href="mystyle.css">
+    <!-- Ajax -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Script -->
+    <script src="script.js"></script>
 
 
     <title>Moodstat</title>
@@ -68,38 +74,6 @@
             </div>
         </div>
     </div>
-
-    <script>
-        var xValues = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        var yValues = ["Good", "Mehh", "Bad"];
-
-        new Chart("myChart", {
-            type: "line",
-            data: {
-                labels: xValues,
-                datasets: [{
-                    fill: false,
-                    lineTension: 0,
-                    backgroundColor: "rgba(0,0,255,1.0)",
-                    borderColor: "rgba(0,0,255,0.1)",
-                    data: yValues
-                }]
-            },
-            options: {
-                legend: {
-                    display: false
-                },
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            min: 0,
-                            max: 3
-                        }
-                    }],
-                }
-            }
-        });
-    </script>
 
     <footer class="text-center bg-dark text-white pt-3 pb-3">Copyright © 2022</footer>
 
