@@ -30,7 +30,7 @@ function processData(allText) {
         week()
         console.log("ding")
     } else if (window.location.href.includes("month")) {
-        //month()
+        month()
     } else if (window.location.href.includes("year")) {
         year()
     } else {
@@ -49,15 +49,72 @@ function moodIndex() {
 
     switch (lines.at(-1)[2]) {
         case "0":
-            moodTarget.innerText = "👍";
+            moodTarget.innerText = "👎";
             break
         case "1":
             moodTarget.innerText = "🖕";
             break
         case "2":
-            moodTarget.innerText = "👎";
+            moodTarget.innerText = "👍";
             break
     }
+}
+
+function month() {
+    var xValues = [];
+    var yValues = [];
+
+    for (let i = 1; i <= moment().daysInMonth(); i++) {
+        var x = moment().format('YYYY-MM-').concat(i > 9 ? "" + i : "0" + i)
+        var y = 0
+        var yCount = 0;
+
+        for (let j = 0; j < lines.length; j++) {
+
+            if (lines[j][0] === x) {
+                y += parseInt(lines[j][2])
+                yCount++
+
+            }
+        }
+
+        if (yCount == 0) {
+            yValues.push(null)
+        } else if (yCount == 1) {
+            yValues.push(y)
+        } else {
+            yValues.push(y / yCount)
+        }
+        xValues.push(x)
+    }
+
+    new Chart("myChart", {
+        type: "line",
+        data: {
+            labels: xValues,
+            datasets: [{
+                fill: false,
+                lineTension: 0,
+                backgroundColor: "rgba(0,0,255,1.0)",
+                borderColor: "rgba(0,0,255,0.1)",
+                data: yValues,
+                spanGaps: true
+            }]
+        },
+        options: {
+            legend: {
+                display: false
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        min: 0,
+                        max: 2
+                    }
+                }],
+            }
+        }
+    });
 }
 
 function week() {
@@ -74,8 +131,6 @@ function week() {
             if (lines[j][0] === x) {
                 y += parseInt(lines[j][2])
                 yCount++
-                console.log(yCount)
-                console.log(y)
 
             }
         }
@@ -124,25 +179,28 @@ function year() {
     var yValues = []
 
     for (let i = 1; i < 13; i++) {
-        var x = moment().month(i).format('YYYY-MM-DD')
-        var y = null
+        var month = i > 9 ? "" + i : "0" + i;
+        var y = 0
         var yCount = 0;
 
         for (let j = 0; j < lines.length; j++) {
 
-            if (lines[j][0] === x) {
-                y += lines[j][2]
+            if (lines[j][0].substring(5, 7) === month) {
+                y += parseInt(lines[j][2])
                 yCount++
 
             }
         }
 
         if (yCount == 0) {
+            yValues.push(null)
+        } else if (yCount == 1) {
             yValues.push(y)
         } else {
             yValues.push(y / yCount)
         }
-        xValues.push(x)
+
+        console.log(yValues)
     }
 
     new Chart("myChart", {
