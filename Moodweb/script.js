@@ -1,14 +1,16 @@
 var lines = [];
 
+// Get Data 
 $.ajax({
     type: "GET",
-    url: "test.csv",
+    url: moment().year() + ".csv",
     dataType: "text",
     success: function(data) {
         processData(data)
     }
 });
 
+// Converts CSV in Array
 function processData(allText) {
     var allTextLines = allText.split(/\r\n|\n/);
     var headers = allTextLines[0].split(',');
@@ -16,7 +18,6 @@ function processData(allText) {
     for (var i = 1; i < allTextLines.length; i++) {
         var data = allTextLines[i].split(',');
         if (data.length == headers.length) {
-
             var tarr = [];
             for (var j = 0; j < headers.length; j++) {
                 tarr.push(data[j]);
@@ -25,7 +26,7 @@ function processData(allText) {
         }
     }
 
-
+    // Calls function depending on HTML site
     if (window.location.href.includes("week")) {
         week()
         console.log("ding")
@@ -36,10 +37,9 @@ function processData(allText) {
     } else {
         moodIndex()
     }
-
-
 }
 
+// index.hmtl
 function moodIndex() {
 
     var moodTarget = document.getElementById('moodvalue')
@@ -60,6 +60,7 @@ function moodIndex() {
     }
 }
 
+// month.hmtl
 function month() {
     var xValues = [];
     var yValues = [];
@@ -70,11 +71,9 @@ function month() {
         var yCount = 0;
 
         for (let j = 0; j < lines.length; j++) {
-
             if (lines[j][0] === x) {
                 y += parseInt(lines[j][2])
                 yCount++
-
             }
         }
 
@@ -117,6 +116,7 @@ function month() {
     });
 }
 
+// week.hmtl
 function week() {
     var xValues = [];
     var yValues = [];
@@ -127,11 +127,9 @@ function week() {
         var yCount = 0;
 
         for (let j = 0; j < lines.length; j++) {
-
             if (lines[j][0] === x) {
                 y += parseInt(lines[j][2])
                 yCount++
-
             }
         }
 
@@ -174,6 +172,7 @@ function week() {
     });
 }
 
+// year.hmtl
 function year() {
     var xValues = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     var yValues = []
@@ -184,11 +183,9 @@ function year() {
         var yCount = 0;
 
         for (let j = 0; j < lines.length; j++) {
-
             if (lines[j][0].substring(5, 7) === month) {
                 y += parseInt(lines[j][2])
                 yCount++
-
             }
         }
 
@@ -199,8 +196,6 @@ function year() {
         } else {
             yValues.push(y / yCount)
         }
-
-        console.log(yValues)
     }
 
     new Chart("myChart", {
