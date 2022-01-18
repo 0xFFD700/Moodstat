@@ -1,25 +1,29 @@
 #include <FastLED.h>
-#include <WiFi.h>
-#include <HTTPClient.h>
+#include <ESP8266HTTPClient.h>
+#include <WiFiClientSecure.h>
+#include <ESP8266WiFi.h>
 
 // Distance
-#define TRIG_PIN 23
-#define ECHO_PIN 22
+#define TRIG_PIN 5
+#define ECHO_PIN 4
 
 // Led
-#define LED_BACK 16
-#define NUM_LEDS 20
+#define LED_BACK 23
+#define NUM_LEDS 2
 
 // Button
-#define BUTTON_GOOD 27
-#define BUTTON_MED 26
-#define BUTTON_BAD 25
+#define BUTTON_GOOD 14
+#define BUTTON_MED 12
+#define BUTTON_BAD 13
 
 // Variables
 float duration_us, distance_cm;
 CRGB leds[NUM_LEDS];
-const char* ssid = "Love.Peace.Unity.";
+const char* ssid = "";
 const char* password = "";
+const char* sessionId = "75982475702";
+const char* fingerprint = "67 62 DA 5C A0 8F 22 6B 8B 6B F3 20 88 B4 F5 5F B5 23 9F 07";
+
 
 void setup() {
   Serial.begin (9600);
@@ -37,33 +41,40 @@ void setup() {
   pinMode(BUTTON_MED, INPUT_PULLUP);
   pinMode(BUTTON_BAD, INPUT_PULLUP);
 
-   // WLAN
+  // WiFi
   delay(4000);
+  WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
 
   // Wait till WiFi is connected
+  Serial.println("Connecting WLAN");
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
-    Serial.println("Connecting WLAN");
+    Serial.print(".");
   }
 
   Serial.println("Connected WLAN");
 }
 
 void sendData(String moodData) {
-    // Check if Wifi is still connected
+  // Check if Wifi is still connected
   if (WiFi.status() == WL_CONNECTED) {
 
-    // HTTP Request
-    HTTPClient http;
-    http.begin("https://0xffd700.com/esppost.php");
-    http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-    String mood = "mood=" + moodData;
-    int httpResponseCode = http.POST(mood);
+    HTTPClient https;
+
+    BearSSL::WiFiClientSecure testclient;
+    testclient.setInsecure();
+
+    https.begin(testclient, "https://moodstat.0xffd700.com/esppost.php");
+    https.addHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    String mood = "mood=" + moodData + "&ids=75982475702";
+
+    int httpResponseCode = https.POST(mood);
 
     // Get POST return
     if (httpResponseCode > 0) {
-      String response = http.getString();
+      String response = https.getString();
       Serial.println("HTTP code:");
       Serial.println(httpResponseCode);
       Serial.println("Answer:");
@@ -73,32 +84,29 @@ void sendData(String moodData) {
       Serial.println(httpResponseCode);
     }
 
-    http.end();
+    https.end();
 
   } else {
     Serial.println("Disconnected WLAN");
   }
-  }
+}
 
 void loop() {
-  // generate 10-microsecond pulse to TRIG pin
+  // Trigger puls for Distance
   digitalWrite(TRIG_PIN, HIGH);
   delayMicroseconds(10);
   digitalWrite(TRIG_PIN, LOW);
 
-  // measure duration of pulse from ECHO pin
   duration_us = pulseIn(ECHO_PIN, HIGH);
 
-  // calculate the distance
   distance_cm = 0.017 * duration_us;
 
-  // print distance
   Serial.print("distance: ");
   Serial.print(distance_cm);
   Serial.println(" cm");
 
-  // if a person stands befor the Moodstat
-  if (distance_cm < 20) {
+  // if a person stands close to Moodstat
+  if (distance_cm < 25) {
 
     Serial.print("Background Led an\n");
 
@@ -116,6 +124,7 @@ void loop() {
   }
 
   // waits for button to be pressed
+  // GOOD
   if (digitalRead(BUTTON_GOOD) == LOW) {
     Serial.print("GOOD");
     for (int i = 0; i < 20; i++) {
@@ -124,7 +133,7 @@ void loop() {
     }
     sendData("2");
     delay(10000);
-  }
+  }   // MEDIUM
   else if (digitalRead(BUTTON_MED) == LOW) {
     Serial.print("MED");
     for (int i = 0; i < 20; i++) {
@@ -133,7 +142,7 @@ void loop() {
     }
     sendData("1");
     delay(10000);
-  }
+  }   // BAD
   else if (digitalRead(BUTTON_BAD) == LOW) {
     Serial.print("BAD");
     for (int i = 0; i < 20; i++) {
