@@ -121,7 +121,7 @@ function week() {
     var xValues = [];
     var yValues = [];
 
-    for (let i = 1; i < 8; i++) {
+    for (let i = 0; i < 7; i++) {
         var x = moment().weekday(i).format('YYYY-MM-DD')
         var y = 0
         var yCount = 0;
