@@ -4,11 +4,11 @@
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	
     // Mood parameter
-    $mood = $_GET["mood"];
-    $ids = $_GET["ids"];
+    $mood = $_POST["mood"];
+    $ids = $_POST["ids"];
 
     // Validate SessionId
-    if ($ids == 75982475702) {
+    if ($ids == <session id>) {
 
         //Get date
         date_default_timezone_set('Europe/Berlin');

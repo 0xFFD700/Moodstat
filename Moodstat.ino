@@ -4,24 +4,23 @@
 #include <ESP8266WiFi.h>
 
 // Distance
-#define TRIG_PIN 5
-#define ECHO_PIN 4
+#define TRIG_PIN 16
+#define ECHO_PIN 5
 
 // Led
-#define LED_BACK 23
-#define NUM_LEDS 2
+#define LED_BACK 0
+#define NUM_LEDS 20
 
 // Button
 #define BUTTON_GOOD 14
-#define BUTTON_MED 12
-#define BUTTON_BAD 13
+#define BUTTON_MED 13
+#define BUTTON_BAD 12
 
 // Variables
 float duration_us, distance_cm;
 CRGB leds[NUM_LEDS];
 const char* ssid = "";
 const char* password = "";
-const char* sessionId = "75982475702";
 const char* fingerprint = "67 62 DA 5C A0 8F 22 6B 8B 6B F3 20 88 B4 F5 5F B5 23 9F 07";
 
 
@@ -68,7 +67,7 @@ void sendData(String moodData) {
     https.begin(testclient, "https://moodstat.0xffd700.com/esppost.php");
     https.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
-    String mood = "mood=" + moodData + "&ids=75982475702";
+    String mood = "mood=" + moodData + "&ids=<session id>";
 
     int httpResponseCode = https.POST(mood);
 
@@ -110,14 +109,14 @@ void loop() {
 
     Serial.print("Background Led an\n");
 
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < NUM_LEDS; i++) {
       leds[i] = CRGB(255, 255, 255);
       FastLED.show();
     }
   } else {
     Serial.print("Background Led aus\n");
 
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < NUM_LEDS; i++) {
       leds[i] = CRGB(0, 0, 0);
       FastLED.show();
     }
@@ -127,7 +126,7 @@ void loop() {
   // GOOD
   if (digitalRead(BUTTON_GOOD) == LOW) {
     Serial.print("GOOD");
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < NUM_LEDS; i++) {
       leds[i] = CRGB(0, 255, 0);
       FastLED.show();
     }
@@ -136,7 +135,7 @@ void loop() {
   }   // MEDIUM
   else if (digitalRead(BUTTON_MED) == LOW) {
     Serial.print("MED");
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < NUM_LEDS; i++) {
       leds[i] = CRGB(255, 128, 0);
       FastLED.show();
     }
@@ -145,7 +144,7 @@ void loop() {
   }   // BAD
   else if (digitalRead(BUTTON_BAD) == LOW) {
     Serial.print("BAD");
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < NUM_LEDS; i++) {
       leds[i] = CRGB(255, 0, 0);
       FastLED.show();
     }
