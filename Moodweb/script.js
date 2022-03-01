@@ -45,9 +45,9 @@ function moodIndex() {
     var moodTarget = document.getElementById('moodvalue')
     var timeTarget = document.getElementById('timevalue')
 
-    timeTarget.innerText = lines.at(-1)[0] + " at " + lines.at(-1)[1];
+    timeTarget.innerText = lines[lines.length - 1][0] + " at " + lines[lines.length - 1][1];
 
-    switch (lines.at(-1)[2]) {
+    switch (lines[lines.length - 1][2]) {
         case "0":
             moodTarget.innerText = "👎";
             break
